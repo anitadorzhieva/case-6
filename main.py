@@ -2,6 +2,7 @@
 Developers:
 Titova Marina-50%, Malahova Anastasia-50%, Dorzhieva Anita-50% 
 """
+# -*- coding: utf-8 -*-
 import random
 import time
 from math import pi, cos, sin
