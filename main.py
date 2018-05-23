@@ -110,7 +110,7 @@ class Train:
                 n, s, d, sp, c = data
             elif len(data) == 6:
                 n, s1, s2, d, sp, c = data
-                s = s1 + s2
+                s = s1 + '' + s2
             s = stations[s]
             trains.append(Train(
                 n, s, d, sp, c, stations
