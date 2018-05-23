@@ -10,8 +10,8 @@ from local import *
 
 class World:
     LINE_LEN = 19400
-    TIME_COEF = 30  # мировых секунд в одной секунде
-    MID_TIME_LINE = 30  # минут
+    TIME_COEF = 30  # world seconds in one second
+    MID_TIME_LINE = 30  # minutes
 
     def __init__(self):
         self.stations = Station.from_dict({
@@ -43,6 +43,8 @@ class Station:
         self.name = name
         self.pos = pos / World.MID_TIME_LINE * World.LINE_LEN
 
+
+
     @staticmethod
     def from_dict(stations):
         stats = {}
@@ -50,11 +52,12 @@ class Station:
             stats[k] = (Station(k, v))
         return stats
 
+
     def check(self, left, right):
-        # выравниваем
+        # level
         left, right = min(left, right), max(left, right)
         if right > World.LINE_LEN:
-            # двигались по часовой, перешли через 0
+            # moved clockwise, crossed 0
             left -= World.LINE_LEN
             right -= World.LINE_LEN
         if left < self.pos < right:
@@ -63,7 +66,7 @@ class Station:
 
 
 class Train:
-    BLOCK_LEN = 20  # длинна вагона в метрах
+    BLOCK_LEN = 20  # car length in meters
 
     def __init__(self, number, station, direction, speed, count, stations):
         self.number = int(number)
@@ -76,7 +79,7 @@ class Train:
         self.stay = 0
 
     def step(self, secs):
-        # секунды модели
+        # seconds of the model
         if self.stay == 0:
             last = self.pos
             if self.direction:
@@ -99,13 +102,20 @@ class Train:
         trains = []
         f = open("metro.txt", encoding='utf-8')
         for line in f.readlines():
-            if not line:
-                break
-            n, s, d, sp, c = line.split()
+            if not line: break
+            data = line.split()
+            n, s, d, sp, c = '', '', '', '', ''
+            if len(data) == 5:
+                n, s, d, sp, c = data
+            elif len(data) == 6:
+                n, s1, s2, d, sp, c = data
+                s = s1 + s2
             s = stations[s]
             trains.append(Train(
-                n, s, d, sp, c, stations))
+                n, s, d, sp, c, stations
+            ))
         return trains
+
 
 
 class Root:
@@ -134,15 +144,15 @@ class Root:
         self.root.mainloop()
 
     def m(self, pixels):
-        # Из пиксели получаем метров
+        # from the pixels get the meters
         return pixels * Root.METER_IN_PIXEL
 
     def px(self, meter):
-        # Из метры получаем пикселей
+        # from the meter get pixels
         return meter / Root.METER_IN_PIXEL
 
     def x(self, pos, radius=None):
-        # По позиции получаем координату x
+        # from the position, obtain the coordinate x
         if radius == None:
             radius = self.R
 
@@ -151,7 +161,7 @@ class Root:
         return radius * cos(angle) + self.cx
 
     def y(self, pos, radius=None):
-        # По позиции получаем координату x
+        # from the position, obtain the coordinate y
         if radius == None:
             radius = self.R
 
